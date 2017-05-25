@@ -12,7 +12,7 @@ class LocationReader():
         line_debug = 0
         with open("locations.list", encoding="latin-1") as list_file:
             for line in list_file:
-                line_debug += 1
+                #line_debug += 1
                 self.process(line)
                 if line_debug > line_limit:
                     break
@@ -34,7 +34,10 @@ class LocationReader():
         if title not in self.media:
             self.media.add(title)
             self.c.execute('''INSERT INTO media(name) VALUES (?)''', (title,))
-        self.c.execute('''INSERT INTO locations VALUES (?, ?)''', (title, location))
+        try:
+            self.c.execute('''INSERT INTO locations VALUES (?, ?)''', (title, location))
+        except sqlite3.IntegrityError:
+            print("{}: {} is a duplicate, ignoring".format(title, location))
         self.conn.commit()
 
 

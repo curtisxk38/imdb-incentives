@@ -16,13 +16,15 @@ def create_db(conn):
                   )''')
     c.execute('''CREATE TABLE locations
                  (
-                 name text PRIMARY KEY,
+                 name text,
                  location text,
+                 PRIMARY KEY (name, location),
                  FOREIGN KEY(name) REFERENCES media(name)
                  )''')
     c.execute('''CREATE TABLE genres
-                 (name text PRIMARY KEY,
+                 (name text,
                   genre text,
+                  PRIMARY KEY (name, genre)
                   FOREIGN KEY(name) REFERENCES media(name)
                   )''')
     # save
