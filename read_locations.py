@@ -1,9 +1,10 @@
 import sqlite3
 
+
 class LocationReader():
-    def __init__(self):
+    def __init__(self, conn):
         self.media = set()
-        self.conn = sqlite3.connect("imdb.db")
+        self.conn = conn
         self.c = self.conn.cursor()
 
     def main(self):
@@ -15,7 +16,6 @@ class LocationReader():
                 self.process(line)
                 if line_debug > line_limit:
                     break
-        print(line_debug)
 
     def process(self, line):
         tab_delimited = line.split("\t") # split line at tab characters
@@ -43,6 +43,7 @@ class LocationReader():
         self.conn.close()
 
 if __name__ == "__main__":
-    l = LocationReader()
+    conn = sqlite3.connect("imdb.db")
+    l = LocationReader(conn)
     l.main()
-    l.done()
+    conn.close()

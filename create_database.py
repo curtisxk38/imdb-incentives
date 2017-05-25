@@ -5,9 +5,23 @@ def create_db():
     c = conn.cursor()
     # Create tables
     c.execute('''CREATE TABLE media
-                 (name text, media_type text, budget real, gross real, year integer)''')
+                 (name text PRIMARY KEY,
+                  media_type text,
+                  budget real,
+                  gross real,
+                  year integer
+                  )''')
     c.execute('''CREATE TABLE locations
-                 (name text, location text)''')
+                 (
+                 name text PRIMARY KEY,
+                 location text,
+                 FOREIGN KEY(name) REFERENCES media(name)
+                 )''')
+    c.execute('''CREATE TABLE genres
+                 (name text PRIMARY KEY,
+                  genre text,
+                  FOREIGN KEY(name) REFERENCES media(name)
+                  )''')
     # save
     conn.commit()
     conn.close()
