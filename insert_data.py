@@ -3,6 +3,7 @@ import os
 
 from read_locations import LocationReader
 from read_genres import GenreReader
+from read_business import BusinessReader
 
 def create_db(conn):
     c = conn.cursor()
@@ -39,8 +40,12 @@ def main():
     else:
         conn = sqlite3.connect("imdb.db")
 
+    print("Finding media filmed in Virginia...")
     LocationReader(conn).main()
+    print("Adding genres to found media...")
     GenreReader(conn).main()
+    print("Adding business information to found media...")
+    BusinessReader(conn).main()
 
     conn.close()
 
