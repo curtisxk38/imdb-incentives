@@ -41,8 +41,6 @@ class GenreReader():
         self.c.execute('''INSERT INTO genres VALUES (?, ?)''', (title, genre))
         self.conn.commit()
 
-    def done(self):
-        self.conn.close()
 
 if __name__ == "__main__":
     conn = sqlite3.connect("imdb.db")

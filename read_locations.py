@@ -24,8 +24,6 @@ class LocationReader():
 
         if self.search_loc(location):
             self.save_to_db(title, location)
-            print("{}: {}".format(title, location))
-
 
     def search_loc(self, location):
         key1 = ", VA"
@@ -39,8 +37,6 @@ class LocationReader():
         self.c.execute('''INSERT INTO locations VALUES (?, ?)''', (title, location))
         self.conn.commit()
 
-    def done(self):
-        self.conn.close()
 
 if __name__ == "__main__":
     conn = sqlite3.connect("imdb.db")

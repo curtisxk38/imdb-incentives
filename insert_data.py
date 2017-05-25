@@ -1,7 +1,10 @@
 import sqlite3
+import os
 
-def create_db():
-    conn = sqlite3.connect("imdb.db")
+from read_locations import LocationReader
+from read_genres import GenreReader
+
+def create_db(conn):
     c = conn.cursor()
     # Create tables
     c.execute('''CREATE TABLE media
@@ -24,7 +27,20 @@ def create_db():
                   )''')
     # save
     conn.commit()
+
+def main():
+    conn = None
+
+    if not os.path.isfile("imdb.db"):
+        conn = sqlite3.connect("imdb.db")
+        create_db(conn)
+    else:
+        conn = sqlite3.connect("imdb.db")
+
+    LocationReader(conn).main()
+    GenreReader(conn).main()
+
     conn.close()
 
 if __name__ == "__main__":
-    create_db()
+    main()
