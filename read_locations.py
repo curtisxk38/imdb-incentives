@@ -46,12 +46,52 @@ class LocationReader():
     def save_to_db(self, title, location):
         if title not in self.media:
             self.media.add(title)
-            self.c.execute('''INSERT INTO media(name) VALUES (?)''', (title,))
+            media_type, year = self.parse_title(title)
+            self.c.execute('''INSERT INTO media(name, media_type, year) VALUES (?, ?, ?)''', (title, media_type, year))
+        
         try:
             self.c.execute('''INSERT INTO locations VALUES (?, ?)''', (title, location))
         except sqlite3.IntegrityError:
             print("{}: {} is a duplicate, ignoring".format(title, location))
+        
         self.conn.commit()
+
+    def parse_title(self, title):
+        """Parse title string for type and year
+        See https://contribute.imdb.com/updates/guide/title_formats for explanation"""
+        media_type = 1 # default to Film
+        year = None
+        # find the opening parantheses that corresponds to the year in the title string
+        open_p = title.find('(')
+        close_p = title.find(')')
+        if open_p == -1:
+            raise ValueError("Can't find year (enclosed in parantheses) in {}".format(title))
+        
+        # separate the title string into parts: just the actual title an then the metadata at the end
+        title_string = title[:open_p - 1] # minus 1 so as not to include the space between the actual title and the year
+        
+        year = title[open_p + 1: open_p + 5] # grab the 4 digits between the parantheses
+        try:
+            year = int(year)
+        except ValueError:
+            print("Malformed year token in {}, unable to find year".format(title))
+            year = None
+        
+        metadata = title[close_p + 2:] # the characters after the space after the close paranthese
+
+        if metadata == "(TV)":
+            media_type = 2
+        elif metadata == "(V)":
+            media_type = 3
+        elif title_string[0] == '"':
+            # could be TV series or TV episode
+            if metadata.startswith("{"): # start of the episode name
+                media_type = 5
+            else:
+                media_type = 4
+
+        return media_type, year
+
 
 
 if __name__ == "__main__":

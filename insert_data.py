@@ -10,7 +10,7 @@ def create_db(conn):
     # Create tables
     c.execute('''CREATE TABLE media
                  (name text PRIMARY KEY,
-                  media_type text,
+                  media_type integer,
                   budget real,
                   gross real,
                   year integer
