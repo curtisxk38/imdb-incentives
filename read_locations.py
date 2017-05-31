@@ -26,9 +26,22 @@ class LocationReader():
             self.save_to_db(title, location)
 
     def search_loc(self, location):
-        key1 = ", VA"
-        key2 = "Virginia"
-        return key1 in location or key2 in location
+        positive = [", VA", "Virginia, USA", "Virginia Beach", ", Virginia", "University of Virginia", "Supreme Court of Virginia"]
+        negative = ["West Virginia"]
+
+        # if any value to be avoided is in the location string, then return false
+        # the occurence of a negative string takes precedence over the occurence of a positive string
+        for neg in negative:
+            if neg in location:
+                return False
+
+        # after that, if a positive value is found return true
+        for pos in positive:
+            if pos in location:
+                return True
+
+        # after that, no positive or negative values were found, so just return false
+        return False
 
     def save_to_db(self, title, location):
         if title not in self.media:
