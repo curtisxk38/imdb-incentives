@@ -12,7 +12,7 @@ class LocationReader():
         self.only_virginia = only_virginia
 
     def main(self):
-        with io.open("locations.list", encoding="latin-1") as list_file:
+        with io.open("locations.list", encoding="utf-8", errors="ignore") as list_file:
             for line in list_file:
                 self.process(line)
 

@@ -12,7 +12,7 @@ class GenreReader():
         self.media = utilities.load_media(self.c)
 
     def main(self):
-        with io.open("genres.list", encoding="latin-1") as list_file:
+        with io.open("genres.list", encoding="utf-8", errors="ignore") as list_file:
             for line in list_file:
                 self.process(line)
                 if len(self.media) == 0:

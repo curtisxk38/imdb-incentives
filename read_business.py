@@ -14,7 +14,7 @@ class BusinessReader():
 
     def main(self):
         processing = False
-        with io.open("business.list", encoding="latin-1") as list_file:
+        with io.open("business.list", encoding="utf-8", errors="ignore") as list_file:
             for line in list_file:
                 if not processing and line == "BUSINESS LIST\n":
                     processing = True
