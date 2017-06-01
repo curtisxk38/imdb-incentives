@@ -1,4 +1,5 @@
 import sqlite3
+import io
 
 import constants
 
@@ -10,7 +11,7 @@ class LocationReader():
         self.c = self.conn.cursor()
 
     def main(self):
-        with open("locations.list", encoding="latin-1") as list_file:
+        with io.open("locations.list", encoding="latin-1") as list_file:
             for line in list_file:
                 self.process(line)
 
