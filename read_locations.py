@@ -5,10 +5,11 @@ import constants
 
 
 class LocationReader():
-    def __init__(self, conn):
+    def __init__(self, conn, only_virginia=True):
         self.media = set()
         self.conn = conn
         self.c = self.conn.cursor()
+        self.only_virginia = only_virginia
 
     def main(self):
         with io.open("locations.list", encoding="latin-1") as list_file:
@@ -28,12 +29,21 @@ class LocationReader():
 
     def search_loc(self, location):
         usa_token = ", USA"
-        for index, state in enumerate(constants.states):
-            if state + usa_token in location:
-                return index
+        
+        if self.only_virginia:
+            virginia = "Virginia"
+            if virginia + usa_token in location:
+                return constants.states.index(virginia)
+            else:
+                return -1
+        
+        else:
+            for index, state in enumerate(constants.states):
+                if state + usa_token in location:
+                    return index
 
-        # No state was found for this location string
-        return -1
+            # No state was found for this location string
+            return -1
 
     def save_to_db(self, title, location, state_index):
         if title not in self.media:
