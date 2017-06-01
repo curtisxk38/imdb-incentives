@@ -92,6 +92,13 @@ class LocationReader():
         """
         potential_year = ""
         end = len(title)
+
+        # find the last occurences of parentheses before the end variable
+        # check if the characters between are a digit, if they aren't
+        # then check for the next to last occurences of parentheses
+        # We have to start at the back because the actual media title,
+        #  could have a well formed year token in it (by that I mean inside the parentheses there could be a 4 digit integer)
+        # This seems to cover all edge cases that occur in the IMDb data
         while not potential_year.isdigit():
             last_open_p = title.rfind("(", 0, end)
             last_close_p = title.rfind(")", 0, end)
@@ -101,6 +108,14 @@ class LocationReader():
                 return None, None, None
 
             potential_year = title[last_open_p+1:last_open_p+5]
+
+            # Some of the data in the imdb is well formed, just the year is unknown
+            # so we still want to return the parentheses locations so that the media type can be found
+            if potential_year == "????":
+                print("Unknown year for <{}>".format(title))
+                return last_open_p, last_close_p, None
+            
+            # update which index of title string we have checked already for the year token
             end = last_open_p
 
         return last_open_p, last_close_p, potential_year

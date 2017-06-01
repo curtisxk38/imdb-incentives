@@ -9,7 +9,7 @@ class TestMediaType(unittest.TestCase):
         self.for_tv = "Life's Other Side (2007) (TV)"
         self.tv_series = '"100 Greatest Discoveries" (2004)'
         self.tv_episode = '"A Haunting (a subtitle)" (2005) {The Dark Side (#3.10)}'
-        self.malformed = "asdf adsf (????a)"
+        self.malformed = "asdf adsf (????a) (TV)"
         self.paren_movie = "Flight Level Three Twenty Four (FL324) (2008) (TV)" # movie with parentheses in title
 
         self.conn = sqlite3.connect("imdb.db")
@@ -36,15 +36,15 @@ class TestMediaType(unittest.TestCase):
         self.assertEqual(year, 2004)
         self.assertEqual(media_type, 4)
 
-    """def test_for_tv_episode(self):
+    def test_for_tv_episode(self):
         media_type, year = self.lr.parse_title(self.tv_episode)
         self.assertEqual(year, 2005)
-        self.assertEqual(media_type, 5)"""
+        self.assertEqual(media_type, 5)
 
     def test_malformed(self):
         media_type, year = self.lr.parse_title(self.malformed)
         self.assertIsNone(year)
-        self.assertIsNone(media_type)
+        self.assertEqual(media_type, 2)
 
     def test_parse_year(self):
         openp, closep, year = self.lr.find_year_token(self.tv_episode)
