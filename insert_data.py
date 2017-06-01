@@ -19,6 +19,7 @@ def create_db(conn):
                  (
                  name text,
                  location text,
+                 state_index integer,
                  PRIMARY KEY (name, location),
                  FOREIGN KEY(name) REFERENCES media(name)
                  )''')
