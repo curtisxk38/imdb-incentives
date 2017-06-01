@@ -1,4 +1,5 @@
 import sqlite3
+import io
 
 
 class BusinessReader():
@@ -15,7 +16,7 @@ class BusinessReader():
 
         loop = 0
 
-        with open("business.list", encoding="latin-1") as list_file:
+        with io.open("business.list", encoding="latin-1") as list_file:
             for line in list_file:
                 loop += 1
                 if not processing and line == "BUSINESS LIST\n":

@@ -1,4 +1,5 @@
 import sqlite3
+import io
 
 
 class GenreReader():
@@ -10,7 +11,7 @@ class GenreReader():
 
     def main(self):
         self.load_media()
-        with open("genres.list", encoding="latin-1") as list_file:
+        with io.open("genres.list", encoding="latin-1") as list_file:
             for line in list_file:
                 self.process(line)
                 if len(self.media) == 0:
