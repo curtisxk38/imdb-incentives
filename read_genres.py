@@ -1,27 +1,22 @@
 import sqlite3
 import io
 
+import utilities
+
 
 class GenreReader():
     def __init__(self, conn):
-        self.media = set()
         self.conn = conn
         self.c = self.conn.cursor()
         self.last_title = ""
+        self.media = utilities.load_media(self.c)
 
     def main(self):
-        self.load_media()
         with io.open("genres.list", encoding="latin-1") as list_file:
             for line in list_file:
                 self.process(line)
                 if len(self.media) == 0:
                     break
-
-    def load_media(self):
-        # Get all media names from media and put them in a set
-        query = self.c.execute('''SELECT name FROM media''').fetchall()
-        flatten = [name for result in query for name in result]
-        self.media = self.media.union(flatten)
 
     def process(self, line):
         tab_delimited = line.split("\t") # split line at tab characters

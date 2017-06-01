@@ -9,14 +9,9 @@ class LocationReader():
         self.c = self.conn.cursor()
 
     def main(self):
-        line_limit = 100
-        line_debug = 0
         with io.open("locations.list", encoding="latin-1") as list_file:
             for line in list_file:
-                #line_debug += 1
                 self.process(line)
-                if line_debug > line_limit:
-                    break
 
     def process(self, line):
         tab_delimited = line.split("\t") # split line at tab characters
