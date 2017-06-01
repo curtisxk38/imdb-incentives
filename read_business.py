@@ -13,18 +13,12 @@ class BusinessReader():
     def main(self):
         self.load_media()
         processing = False
-
-        loop = 0
-
         with io.open("business.list", encoding="latin-1") as list_file:
             for line in list_file:
-                loop += 1
                 if not processing and line == "BUSINESS LIST\n":
                     processing = True
                 if processing:
                     self.process(line)
-                if loop > 640000:
-                    break
 
     def process(self, line):
         if line == "-------------------------------------------------------------------------------\n":
