@@ -31,9 +31,10 @@ class LocationReader():
         usa_token = ", USA"
         
         if self.only_virginia:
-            virginia = "Virginia"
-            if virginia + usa_token in location:
-                return constants.states.index(virginia)
+            va = "Virginia"
+            wva = "West Virginia"
+            if va + usa_token in location and wva + usa_token not in location:
+                return constants.states.index(va)
             else:
                 return -1
         

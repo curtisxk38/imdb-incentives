@@ -1,6 +1,7 @@
 import unittest
 import read_locations
 import sqlite3
+import constants
 
 class TestMediaType(unittest.TestCase):
     def setUp(self):
@@ -51,3 +52,24 @@ class TestMediaType(unittest.TestCase):
         self.assertEqual(year, "2005")
         openp, closep, year = self.lr.find_year_token(self.paren_movie)
         self.assertEqual(year, "2008")
+
+class TestLocationFinder(unittest.TestCase):
+    def setUp(self):
+        self.conn = sqlite3.connect("imdb.db")
+        self.lr_all = read_locations.LocationReader(self.conn, only_virginia=False)
+        self.lr_va = read_locations.LocationReader(self.conn)
+
+        self.location1 = "Roanoke, Virginia, USA"
+        self.location2 = "Fairmont, West Virginia, USA"
+
+    def test_all_states(self):
+        state = self.lr_all.search_loc(self.location1)
+        self.assertEqual(state, constants.states.index("Virginia"))
+        state2 = self.lr_all.search_loc(self.location2)
+        self.assertEqual(state2, constants.states.index("West Virginia"))
+
+    def test_all_states(self):
+        state = self.lr_va.search_loc(self.location1)
+        self.assertEqual(state, constants.states.index("Virginia"))
+        state2 = self.lr_va.search_loc(self.location2)
+        self.assertEqual(state2, -1)
