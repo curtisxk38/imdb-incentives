@@ -13,7 +13,6 @@ class BusinessReader():
         self.media = utilities.load_media(self.c)
 
     def main(self):
-        self.load_media()
         processing = False
         with io.open("business.list", encoding="latin-1") as list_file:
             for line in list_file:
