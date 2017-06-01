@@ -59,23 +59,17 @@ class LocationReader():
     def parse_title(self, title):
         """Parse title string for type and year
         See https://contribute.imdb.com/updates/guide/title_formats for explanation"""
-        media_type = 1 # default to Film
-        year = None
-        # find the opening parantheses that corresponds to the year in the title string
-        open_p = title.find('(')
-        close_p = title.find(')')
-        if open_p == -1:
-            raise ValueError("Can't find year (enclosed in parantheses) in {}".format(title))
+        media_type = 1 # default assumption to Film
+
+        open_p, close_p, year = self.find_year_token(title)
+
+        # year is gauranteed to be a digit if not None by find_year_token()
+        if year is not None:
+            year = int(year) 
         
-        # separate the title string into parts: just the actual title an then the metadata at the end
-        title_string = title[:open_p - 1] # minus 1 so as not to include the space between the actual title and the year
-        
-        year = title[open_p + 1: open_p + 5] # grab the 4 digits between the parantheses
-        try:
-            year = int(year)
-        except ValueError:
-            print("Malformed year token in {}, unable to find year".format(title))
-            year = None
+        # if find_year_token couldn't find the year token, the we can't find the media_type either
+        if open_p is None and close_p is None:
+            return None, year
         
         metadata = title[close_p + 2:] # the characters after the space after the close paranthese
 
@@ -83,7 +77,7 @@ class LocationReader():
             media_type = 2
         elif metadata == "(V)":
             media_type = 3
-        elif title_string[0] == '"':
+        elif title[0] == '"':
             # could be TV series or TV episode
             if metadata.startswith("{"): # start of the episode name
                 media_type = 5
@@ -91,6 +85,25 @@ class LocationReader():
                 media_type = 4
 
         return media_type, year
+
+    def find_year_token(self, title):
+        """Given a title string find the part that has (yyyy) in it
+            This is needed for further processing of the title string
+        """
+        potential_year = ""
+        end = len(title)
+        while not potential_year.isdigit():
+            last_open_p = title.rfind("(", 0, end)
+            last_close_p = title.rfind(")", 0, end)
+
+            if last_open_p == -1 or last_close_p == -1:
+                print("Malformed year token in <{}>, unable to process this title".format(title))
+                return None, None, None
+
+            potential_year = title[last_open_p+1:last_open_p+5]
+            end = last_open_p
+
+        return last_open_p, last_close_p, potential_year
 
 
 
