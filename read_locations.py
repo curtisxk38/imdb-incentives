@@ -41,6 +41,9 @@ class LocationReader():
         else:
             for index, state in enumerate(constants.states):
                 if state + usa_token in location:
+                    # this makes sure that locations with "West Virginia" do not get matched to Virginia
+                    if index == constants.states.index("Virginia") and "West Virginia" + usa_token in location:
+                        return constants.states.index("West Virginia")
                     return index
 
             # No state was found for this location string
